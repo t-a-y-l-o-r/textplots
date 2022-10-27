@@ -118,6 +118,7 @@ pub trait Plot<'a> {
 pub trait ColorPlot<'a> {
     /// Draws a [line chart](https://en.wikipedia.org/wiki/Line_chart) of points connected by straight line segments using the specified color
     fn linecolorplot(&'a mut self, shape: &'a Shape, color: RGB8) -> &'a mut Chart;
+    fn linecolorplot_vec(&'a mut self, shape_vec: &'a Vec<&'a Shape>, color: Vec<RGB8>) -> &'a mut Chart;
 }
 
 impl<'a> Default for Chart<'a> {
@@ -408,6 +409,21 @@ impl<'a> ColorPlot<'a> for Chart<'a> {
             self.rescale(shape);
         }
         self
+    }
+
+    fn linecolorplot_vec(&'a mut self, shape_vec: &'a Vec<&'a Shape>, color_vec: Vec<RGB8>) -> &'a mut Chart {
+      let shape_count = shape_vec.iter().count();
+      let color_count = color_vec.iter().count();
+      if shape_count != color_count {
+        panic!("Shape vector and Color vector must be same size, instead found: {} {}", shape_count, color_count);
+      }
+      for (i, shape) in shape_vec.iter().enumerate() {
+        self.shapes.push((shape, Some(*color_vec.iter().nth(i).unwrap())));
+        if self.y_ranging == ChartRangeMethod::AutoRange {
+          self.rescale(shape);
+        }
+      }
+      self
     }
 }
 
