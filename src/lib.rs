@@ -62,6 +62,7 @@ use std::f32;
 
 /// How the chart will do the ranging on axes
 #[derive(PartialEq)]
+#[derive(Clone)]
 enum ChartRangeMethod {
     /// Automatically ranges based on input data
     AutoRange,
@@ -69,8 +70,10 @@ enum ChartRangeMethod {
     FixedRange,
 }
 
+#[derive(Clone)]
 /// Controls the drawing.
 pub struct Chart<'a> {
+
     /// Canvas width in points.
     width: u32,
     /// Canvas height in points.
